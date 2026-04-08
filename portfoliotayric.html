@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio – Tayric Njike Sandjo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --bg: #09090f;
+      --bg2: #0f0f1a;
+      --bg3: #14141f;
+      --surface: #1a1a2e;
+      --surface2: #22223a;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --accent3: #43e97b;
+      --text: #e8e8f0;
+      --text-muted: #7a7a9a;
+      --border: rgba(108,99,255,0.18);
+      --glow: rgba(108,99,255,0.25);
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ===== CURSOR ===== */
+    #cursor {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(108,99,255,0.5);
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s cubic-bezier(.23,1,.32,1), width 0.3s, height 0.3s;
+    }
+    body:hover #cursor { transform: translate(-50%, -50%) scale(1); }
+    a:hover ~ #cursor, button:hover ~ #cursor { transform: translate(-50%, -50%) scale(2.5); }
+
+    /* ===== NOISE OVERLAY ===== */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.4;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(9,9,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--text-muted); }
+    .nav-links { display: flex; gap: 0.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      transition: color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: 4px; left: 50%; right: 50%;
+      height: 1px; background: var(--accent);
+      transition: left 0.2s, right 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { left: 1rem; right: 1rem; }
+
+    /* ===== SECTIONS ===== */
+    section {
+      min-height: 100vh;
+      padding: 9rem 4rem 5rem;
+      position: relative;
+    }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 2.5rem; height: 1px;
+      background: var(--accent);
+    }
+
+    /* ===== HERO ===== */
+    #presentation {
+      display: flex; align-items: center;
+      background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(108,99,255,0.12) 0%, transparent 70%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+    }
+    .hero-name {
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.2rem;
+      opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+    }
+    .hero-name .accent { color: var(--accent); }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 500px;
+      margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+    }
+    .hero-cta {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.7s 0.65s forwards;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 30px rgba(108,99,255,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(108,99,255,0.6); }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--accent); transform: translateY(-2px); }
+
+    /* Hero right: avatar placeholder + badges */
+    .hero-visual {
+      display: flex; flex-direction: column; align-items: center; gap: 2rem;
+      opacity: 0; animation: fadeIn 1s 0.5s forwards;
+    }
+    .avatar-wrap {
+      width: 220px; height: 220px; border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      box-shadow: 0 0 60px var(--glow);
+    }
+    .avatar-wrap::before {
+      content: '';
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 1px dashed rgba(108,99,255,0.3);
+      animation: spin 20s linear infinite;
+    }
+    .avatar-icon { font-size: 5rem; }
+    .hero-badges { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== BTS SIO ===== */
+    #bts-sio { background: var(--bg2); }
+    .section-title {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+    .bts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .card:hover { transform: translateY(-5px); border-color: rgba(108,99,255,0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .card:hover::before { opacity: 1; }
+    .card-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .card-title {
+      font-size: 1.15rem; font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .card-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+
+    /* Option pills */
+    .option-pills { display: flex; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+    .pill {
+      padding: 0.55rem 1.4rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      transition: all 0.2s;
+      cursor: none;
+    }
+    .pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(108,99,255,0.35);
+    }
+
+    /* ===== STAGES ===== */
+    #stages { background: var(--bg); }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0; left: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+    .timeline-item {
+      position: relative; margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-dot {
+      position: absolute; left: -2.4rem; top: 0.4rem;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-company { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .timeline-role { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+    .timeline-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      max-width: 650px;
+      border-left: 2px solid var(--border);
+      padding-left: 1.2rem;
+    }
+    .skill-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .skill-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+      background: rgba(108,99,255,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(108,99,255,0.25);
+    }
+
+    /* ===== PROJETS ===== */
+    #projets { background: var(--bg2); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .project-card:hover { transform: translateY(-6px); box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
+    .project-thumb {
+      height: 180px;
+      background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-thumb::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(255,101,132,0.1));
+    }
+    .project-body { padding: 1.6rem; }
+    .project-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .project-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.2rem; }
+    .project-links { display: flex; gap: 0.8rem; }
+    .project-link {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 0.3rem;
+      transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--accent2); }
+
+    /* ===== VEILLE ===== */
+    #veille { background: var(--bg); }
+    .veille-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .veille-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      transition: transform 0.25s, border-color 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .veille-card:hover { transform: translateY(-4px); border-color: rgba(108,99,255,0.4); }
+    .veille-category {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .cat-ia { background: rgba(108,99,255,0.15); color: var(--accent); border: 1px solid rgba(108,99,255,0.3); }
+    .cat-secu { background: rgba(255,101,132,0.15); color: var(--accent2); border: 1px solid rgba(255,101,132,0.3); }
+    .cat-dev { background: rgba(67,233,123,0.12); color: var(--accent3); border: 1px solid rgba(67,233,123,0.25); }
+    .cat-cloud { background: rgba(255,200,70,0.12); color: #ffc846; border: 1px solid rgba(255,200,70,0.25); }
+    .veille-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .veille-date {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+    .veille-summary { color: var(--text-muted); font-size: 0.87rem; line-height: 1.65; }
+    .veille-source {
+      margin-top: 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .veille-source a { color: var(--accent); text-decoration: none; }
+    .veille-source a:hover { text-decoration: underline; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 3rem 4rem;
+      text-align: center;
+    }
+    .footer-name {
+      font-size: 1.5rem; font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .footer-sub {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 2rem; }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); opacity: 0.5; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 7rem 1.5rem 4rem; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      footer { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="#presentation" class="nav-logo">&lt;<span>PN</span> /&gt;</a>
+    <ul class="nav-links">
+      <li><a href="#presentation">Présentation</a></li>
+      <li><a href="#bts-sio">BTS SIO</a></li>
+      <li><a href="#stages">Stages</a></li>
+      <li><a href="#projets">Projets</a></li>
+      <li><a href="#veille">Veille</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section id="presentation">
+    <div class="section-inner">
+      <div class="hero-grid">
+        <div>
+          <p class="hero-eyebrow">// Portfolio 2025–2027</p>
+          <h1 class="hero-name">
+            Tayric<br><span class="accent">Njike Sandjo</span>
+          </h1>
+          <p class="hero-sub">
+            Étudiant en BTS SIO · Passionné par le développement et les nouvelles technologies.
+            Curieux, rigoureux, et toujours prêt à apprendre.
+          </p>
+          <div class="hero-cta">
+            <a href="#projets" class="btn btn-primary">Voir mes projets →</a>
+            <a href="#stages" class="btn btn-ghost">Mon parcours</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="avatar-wrap">
+            <span class="avatar-icon">🧑‍💻</span>
+          </div>
+          <div class="hero-badges">
+            <span class="badge">HTML/CSS</span>
+            <span class="badge">JavaScript</span>
+            <span class="badge">PHP</span>
+            <span class="badge">Python</span>
+            <span class="badge">SQL</span>
+            <span class="badge">Linux</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BTS SIO ===== -->
+  <section id="bts-sio">
+    <div class="section-inner">
+      <p class="section-label">Formation</p>
+      <h2 class="section-title">BTS SIO</h2>
+
+      <div class="option-pills">
+        <span class="pill active">Option SLAM</span>
+        <span class="pill">Option SISR</span>
+      </div>
+
+      <div class="bts-grid">
+        <div class="card">
+          <div class="card-icon">🎓</div>
+          <div class="card-title">Présentation du BTS SIO</div>
+          <div class="card-text">
+            Le Brevet de Technicien Supérieur Services Informatiques aux Organisations (BTS SIO)
+            forme des techniciens capables de répondre aux besoins informatiques des entreprises,
+            en développement ou en réseau.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💻</div>
+          <div class="card-title">Option SLAM</div>
+          <div class="card-text">
+            Solutions Logicielles et Applications Métiers : conception et développement d'applications,
+            gestion de bases de données, développement web et mobile.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌐</div>
+          <div class="card-title">Option SISR(option choisie)</div>
+          <div class="card-text">
+            Solutions d'Infrastructure, Systèmes et Réseaux : administration des réseaux,
+            maintenance des infrastructures, sécurité des systèmes d'information.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📚</div>
+          <div class="card-title">Matières enseignées</div>
+          <div class="card-text">
+            Mathématiques, Anglais, Culture générale, Cybersécurité, Développement web,
+            Base de données, Administration systèmes, Droit et économie.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏫</div>
+          <div class="card-title">Mon établissement</div>
+          <div class="card-text">
+            Lycée Jean Vilar — Plaisir. Promotion 2025–2027.
+            Formation en deux ans avec deux périodes de stage obligatoires en entreprise.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <div class="card-title">E4 & E5 – Épreuves professionnelles</div>
+          <div class="card-text">
+            L'E4 concerne la conception de solutions, l'E5 l'administration des systèmes.
+            Ce portfolio sert de support pour présenter mes activités professionnelles.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STAGES ===== -->
+  <section id="stages">
+    <div class="section-inner">
+      <p class="section-label">Expériences</p>
+      <h2 class="section-title">Mes Stages</h2>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">// Stage 1 · Jan – Fév 2025</div>
+          <div class="timeline-company">INALCO</div>
+          <div class="timeline-role">Développeur web stagiaire · Ville</div>
+          <div class="timeline-desc">
+            Description de vos missions : développement de fonctionnalités,
+            participation à des projets en équipe, maintenance d'applications existantes.
+            Décrire ici ce que vous avez appris et accompli durant ce stage.
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag"></span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">PHP</span>
+            <span class="skill-tag">MySQL</span>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">// Stage 2 · Mai – Juin 2025</div>
+          <div class="timeline-company">Nom de l'entreprise</div>
+          <div class="timeline-role">Technicien informatique stagiaire · Ville</div>
+          <div class="timeline-desc">
+            Description de vos missions : support utilisateur, administration réseau,
+            déploiement de postes, participation à la sécurité informatique de l'entreprise.
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">Linux</span>
+            <span class="skill-tag">Windows Server</span>
+            <span class="skill-tag">Active Directory</span>
+            <span class="skill-tag">Python</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJETS ===== -->
+  <section id="projets">
+    <div class="section-inner">
+      <p class="section-label">Réalisations</p>
+      <h2 class="section-title">Mes Projets</h2>
+
+      <div class="projects-grid">
+
+        <div class="project-card">
+          <div class="project-thumb">🛒</div>
+          <div class="project-body">
+            <div class="project-title">Site e-commerce</div>
+            <div class="skill-tags" style="margin-bottom:0.8rem">
+              <span class="skill-tag">PHP</span><span class="skill-tag">MySQL</span><span class="skill-tag">Bootstrap</span>
+            </div>
+            <div class="project-desc">
+              Application web de vente en ligne avec gestion des utilisateurs,
+              panier, paiement simulé et back-office d'administration.
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">⌁ GitHub</a>
+              <a href="#" class="project-link">⌁ Démo</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">📊</div>
+          <div class="project-body">
+            <div class="project-title">Application de gestion</div>
+            <div class="skill-tags" style="margin-bottom:0.8rem">
+              <span class="skill-tag">Python</span><span class="skill-tag">SQLite</span>
+            </div>
+            <div class="project-desc">
+              Outil de gestion de stock ou de ressources humaines développé en Python
+              avec interface graphique Tkinter et base de données embarquée.
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">⌁ GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">🔐</div>
+          <div class="project-body">
+            <div class="project-title">Dashboard réseau</div>
+            <div class="skill-tags" style="margin-bottom:0.8rem">
+              <span class="skill-tag">JavaScript</span><span class="skill-tag">API REST</span>
+            </div>
+            <div class="project-desc">
+              Interface de monitoring réseau affichant en temps réel l'état des machines
+              et alertes via une API. Projet réalisé en stage.
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">⌁ GitHub</a>
+              <a href="#" class="project-link">⌁ Rapport</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">📱</div>
+          <div class="project-body">
+            <div class="project-title">Application mobile</div>
+            <div class="skill-tags" style="margin-bottom:0.8rem">
+              <span class="skill-tag">React Native</span><span class="skill-tag">Node.js</span>
+            </div>
+            <div class="project-desc">
+              Application mobile de prise de notes ou agenda personnel développée avec
+              React Native et backend Express.js.
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">⌁ GitHub</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VEILLE TECHNO ===== -->
+  <section id="veille">
+    <div class="section-inner">
+      <p class="section-label">Actualité tech</p>
+      <h2 class="section-title">Veille Technologique</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:2.5rem;max-width:600px;">
+        Dans le cadre du BTS SIO, j'effectue une veille régulière sur les évolutions
+        technologiques liées à mon domaine.
+      </p>
+
+      <div class="veille-grid">
+
+        <div class="veille-card">
+          <span class="veille-category cat-ia">Intelligence Artificielle</span>
+          <div class="veille-title">L'essor des LLM dans le développement</div>
+          <div class="veille-date">Mars 2025</div>
+          <div class="veille-summary">
+            Les modèles de langage comme GPT-4 ou Claude transforment la façon dont
+            les développeurs codent. Des outils comme GitHub Copilot intègrent ces IA
+            directement dans les IDE, accélérant la productivité jusqu'à 30%.
+          </div>
+          <div class="veille-source">Source : <a href="#">GitHub Blog</a></div>
+        </div>
+
+        <div class="veille-card">
+          <span class="veille-category cat-secu">Cybersécurité</span>
+          <div class="veille-title">Ransomware : tendances 2025</div>
+          <div class="veille-date">Fév 2025</div>
+          <div class="veille-summary">
+            Les attaques par ransomware ciblent de plus en plus les collectivités locales
+            et les hôpitaux. Les techniques de double extorsion (chiffrement + fuite de données)
+            se généralisent, obligeant les entreprises à revoir leur stratégie de sauvegarde.
+          </div>
+          <div class="veille-source">Source : <a href="#">ANSSI</a></div>
+        </div>
+
+        <div class="veille-card">
+          <span class="veille-category cat-dev">Développement</span>
+          <div class="veille-title">Web Components & microfrontends</div>
+          <div class="veille-date">Janv 2025</div>
+          <div class="veille-summary">
+            L'architecture microfrontend gagne du terrain dans les grandes applications web.
+            Les Web Components natifs permettent de créer des composants réutilisables
+            indépendants du framework, facilitant la maintenabilité du code.
+          </div>
+          <div class="veille-source">Source : <a href="#">MDN Web Docs</a></div>
+        </div>
+
+        <div class="veille-card">
+          <span class="veille-category cat-cloud">Cloud & DevOps</span>
+          <div class="veille-title">Kubernetes et la conteneurisation</div>
+          <div class="veille-date">Déc 2024</div>
+          <div class="veille-summary">
+            Kubernetes s'impose comme le standard de l'orchestration de conteneurs.
+            Les entreprises migrent massivement vers des architectures cloud-native,
+            réduisant les coûts d'infrastructure et améliorant la résilience des services.
+          </div>
+          <div class="veille-source">Source : <a href="#">CNCF</a></div>
+        </div>
+
+        <div class="veille-card">
+          <span class="veille-category cat-secu">Cybersécurité</span>
+          <div class="veille-title">Zero Trust : vers une sécurité périmétrique</div>
+          <div class="veille-date">Nov 2024</div>
+          <div class="veille-summary">
+            Le modèle Zero Trust, qui consiste à ne jamais faire confiance par défaut,
+            même aux ressources internes, devient la norme dans les grandes organisations.
+            Il implique une authentification forte et une vérification continue.
+          </div>
+          <div class="veille-source">Source : <a href="#">NIST</a></div>
+        </div>
+
+        <div class="veille-card">
+          <span class="veille-category cat-ia">Intelligence Artificielle</span>
+          <div class="veille-title">IA générative et droits d'auteur</div>
+          <div class="veille-date">Oct 2024</div>
+          <div class="veille-summary">
+            La question des droits d'auteur pour les contenus générés par IA soulève
+            des enjeux juridiques majeurs. L'Union européenne travaille sur un cadre
+            réglementaire avec l'AI Act pour encadrer ces nouvelles pratiques.
+          </div>
+          <div class="veille-source">Source : <a href="#">Parlement Européen</a></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-name">Prénom Nom</div>
+    <div class="footer-sub">BTS SIO · Option SLAM · Promo 2025–2027</div>
+    <div class="footer-links">
+      <a href="mailto:email@example.com">✉ Email</a>
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+    </div>
+    <div class="footer-copy">© 2025 — Conçu et développé par Prénom Nom</div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top = e.clientY + 'px';
+      }, 60);
+    });
+    document.querySelectorAll('a, button, .pill').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '22px';
+        cursor.style.height = '22px';
+        ring.style.width = '55px';
+        ring.style.height = '55px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px';
+        cursor.style.height = '12px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
+    });
+
+    // Pills toggle (BTS SIO)
+    document.querySelectorAll('.pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      });
+    });
+
+    // Scroll reveal for timeline
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.timeline-item').forEach(item => observer.observe(item));
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            link.style.color = '';
+            if (link.getAttribute('href') === '#' + id) {
+              link.style.color = 'var(--text)';
+            }
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => scrollObserver.observe(s));
+  </script>
+</body>
+</html>
